@@ -1,0 +1,88 @@
+#include <iostream>
+#include <algorithm>
+#include <string.h>
+using namespace std;
+
+typedef struct proccess
+{
+	int arrival_t,burst_t,completion_t,turn_a,waiting_t,btt,pr;
+	string p_id;
+
+
+}schedule;
+
+bool compare(schedule a,schedule b)
+{
+	return a.arrival_t<b.arrival_t;
+}
+
+bool compare2(schedule a,schedule b)
+{
+	return a.pr>b.pr;
+}
+
+int main()
+{
+	schedule p[10];
+	int n,i,j,pcom;
+
+	cout<<"Enter the number of process::";
+	cin>>n;
+	
+	for(i=0;i<n;i++)
+	{
+		cout<<"Enter the Process id arrival time burst time and priority :::";
+		cin>>p[i].p_id;
+		cin>>p[i].arrival_t;
+		cin>>p[i].burst_t;
+		p[i].btt=p[i].burst_t;
+		cin>>p[i].pr;
+	}
+
+	sort(p,p+n,compare);	
+
+	i=0;
+	pcom=0;
+	while(pcom<n)
+	{
+		for(j=0;j<n;j++)
+		{
+			if(p[j].arrival_t>i)
+			break;
+		}
+		sort(p,p+j,compare2);
+		if(j>0)
+		{
+			for(j=0;j<n;j++)
+			{
+				if(p[j].burst_t!=0)
+				break;
+			}
+			if(p[j].arrival_t>i)
+			i+=p[j].arrival_t-i;
+			p[j].completion_t=i+1;
+			p[j].burst_t--;
+		}
+		
+		i++;
+		pcom=0;
+		for(j=0;j<n;j++)
+		{
+			if(p[j].burst_t==0)
+			pcom++;
+		}
+	}
+	cout<<endl;
+	cout<<endl;
+    cout<<" Id  \t arrival\tcompletion \t turn_around \t waiting \t piority\n";
+	for(i=0;i<n;i++)
+	{
+		p[i].turn_a=p[i].completion_t-p[i].arrival_t;
+		p[i].waiting_t=p[i].turn_a-p[i].btt;
+
+		cout<<p[i].p_id<<"\t"<<p[i].arrival_t<<"\t"<<p[i].completion_t<<"\t"<<p[i].turn_a<<"\t"<<p[i].waiting_t<<"\t"<<p[i].pr;
+		cout<<endl;
+	}
+
+	return 0;
+}
